@@ -31,7 +31,7 @@ const userSchema = new Schema({
 });
 
 // On save hook, encrypt password
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', function(next) {
     const user = this;
 
     bcrypt.genSalt(10, (err, salt) => {
