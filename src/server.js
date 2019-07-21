@@ -5,12 +5,13 @@ import morgan from 'morgan';
 import { connect } from 'mongoose';
 import cors from 'cors';
 import router from './router';
+import { port, dbPath } from './config';
 
 const app = express();
 
 // Database
 connect(
-    `mongodb://localhost:expense/expense`,
+    dbPath,
     { useNewUrlParser: true }
 );
 
@@ -21,7 +22,6 @@ app.use(bodyParser.json({ type: '*/*' }));
 router(app);
 
 // Server
-const port = process.env.PORT || 3090;
 const server = http.createServer(app);
 server.listen(port);
 
