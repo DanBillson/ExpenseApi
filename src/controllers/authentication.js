@@ -46,6 +46,7 @@ export const signUp = (req, res, next) => {
 
             res.json({
                 userId: newUser._id,
+                name: newUser.name,
                 token: tokenForUser(newUser)
             });
         });
@@ -53,5 +54,9 @@ export const signUp = (req, res, next) => {
 };
 
 export const signIn = (req, res, next) => {
-    res.send({ userId: req.user._id, token: tokenForUser(req.user) });
+    res.send({
+        userId: req.user._id,
+        name: req.user.name,
+        token: tokenForUser(req.user)
+    });
 };
