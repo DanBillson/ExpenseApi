@@ -13,12 +13,12 @@ export const signUp = (req, res, next) => {
     if (!name || !email || !password) {
         return res
             .status(422)
-            .send({ error: 'You must provide a name, email and password.' });
+            .send({ error: 'Please provide a name, email and password.' });
     }
 
     if (password.length < 6) {
         return res.status(422).send({
-            error: 'Your passowrd must be at least 6 characters long.'
+            error: 'Please enter a password that is at least 6 characters long.'
         });
     }
 
@@ -28,9 +28,9 @@ export const signUp = (req, res, next) => {
         }
 
         if (user) {
-            return res
-                .status(422)
-                .send({ error: `Email ${email} is already in use.` });
+            return res.status(422).send({
+                error: `The email ${email} is already in use, please try a different one.`
+            });
         }
 
         const newUser = new User({
@@ -58,5 +58,47 @@ export const signIn = (req, res, next) => {
         userId: req.user._id,
         name: req.user.name,
         token: tokenForUser(req.user)
+    });
+};
+
+export const updatePassword = (req, res, next) => {
+    const { userId, password, verifyPassword } = req.body;
+
+    if (password !== verifyPassword) {
+        return res.status(422).send({
+            error: 'Please make sure the two entries match.'
+        });
+    }
+
+    if (password.length < 6) {
+        return res.status(422).send({
+            error: 'Please enter a password that is at least 6 characters long.'
+        });
+    }
+
+    User.findById(userId, (err, user) => {
+        if (err) {
+            return next(err);
+        }
+
+        user.comparePassword(password, (err, isMatch) => {
+            if (err) {
+                return done(err);
+            }
+
+            if (isMatch) {
+                return res.status(422).send({
+                    error:
+                        'Sorry, this password is already in use, please try another one'
+                });
+            }
+            user.password = password;
+            user.save(err => {
+                if (err) {
+                    return next(err);
+                }
+                res.send({ message: 'Your password has been updated.' });
+            });
+        });
     });
 };

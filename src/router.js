@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { signUp, signIn } from './controllers/authentication';
+import { signUp, signIn, updatePassword } from './controllers/authentication';
 import {
     getTransactions,
     addTransaction,
@@ -19,6 +19,7 @@ export default app => {
     // Authentication
     app.post('/signup', signUp);
     app.post('/signin', requireSignIn, signIn);
+    app.put('/updatePassword', requireAuth, updatePassword);
 
     // Transactions
     app.get('/getTransactions', requireAuth, getTransactions);
