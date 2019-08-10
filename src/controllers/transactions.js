@@ -1,7 +1,7 @@
 import User from '../models/user';
 
 export const getTransactions = (req, res, next) => {
-    const { userId } = req.body;
+    const userId = req.query.userId;
 
     User.findById(userId, (err, user) => {
         if (err) {
@@ -40,7 +40,9 @@ export const addTransaction = (req, res, next) => {
 
         user.transactions.push(transaction);
         user.save();
-        res.send({ transactions: user.transactions });
+        res.send({
+            transaction: user.transactions[user.transactions.length - 1]
+        });
     });
 };
 
